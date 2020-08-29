@@ -1,26 +1,38 @@
 <template>
-  <div v-if="currentParticipant" class="edit-form">
-    <h4>Tutorial</h4>
-    <form>
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name"
-          v-model="currentParticipant.name"
-        />
+  <div v-if="currentParticipant" class="container">
+    <h4>Participant Detail (edit mode)</h4>
+    <div v-if="!submitted" class="notification">
+      <label class="subtitle" for="name">Name</label>
+      <div class="field">
+        <div class="control">
+          <input class="input is-primary" type="text" placeholder="Primary input" id="name" required v-model="currentParticipant.name" name="name">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="manager_email_address">Manager email address</label>
-        <input type="text" class="form-control" id="manager_email_address"
-          v-model="currentParticipant.manager_email_address"
-        />
+      <label class="subtitle" for="manager_email_address">Manager Email Address</label>
+      <div class="field">
+        <div class="control">
+          <input class="input is-danger" type="email" placeholder="Email input" value="hello@" id="manager_email_address" required v-model="currentParticipant.manager_email_address" name="manager_email_address">
+        </div>
       </div>
-
-      <div class="form-group">
-        <label><strong>Tipo de participante:</strong></label>
-        {{ currentParticipant.type_of_participant ? "Band" : "Carriage" }}
+      <label class="subtitle" for="type_of_participant">Type of participant</label>
+      <div class="control">
+        <div class="select">
+          <select class="form-control" id="type_of_participant" required v-model="currentParticipant.type_of_participant" name="type_of_participant">
+            <option>BAND</option>
+            <option>CARRIAGE</option>
+          </select>
+        </div>
       </div>
-    </form>
-    <p>{{ message }}</p>
+      <label class="subtitle" for="foundation_date">Foundation date</label>
+      <div class="field">
+        <div class="control">
+          <input class="input is-primary" type="text" placeholder="Primary input" id="foundation_date" required v-model="currentParticipant.foundation_date" name="foundation_date">
+        </div>
+      </div>
+    </div>
+    <div class="control">
+        <button class="button is-primary" @click="updateParticipant">Update</button>
+      </div>
   </div>
 
   <div v-else>
@@ -30,7 +42,7 @@
 </template>
 
 <script>
-import ParticipantDataService from '../services/ParticipantDataService'
+import userService from '../services/user.service'
 
 export default {
   name: 'participant',
@@ -41,11 +53,21 @@ export default {
     }
   },
   methods: {
-    getTutorial (id) {
-      ParticipantDataService.get(id)
+    getParticipant (id) {
+      userService.getParticipantByDetail(id)
         .then(response => {
           this.currentParticipant = response.data
           console.log(response.data)
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
+    updateParticipant (id, data) {
+      userService.updateParticipant(this.currentParticipant.id, this.currentParticipant)
+        .then(response => {
+          console.log(response.data)
+          this.message = 'The participant was updated successfully!'
         })
         .catch(e => {
           console.log(e)

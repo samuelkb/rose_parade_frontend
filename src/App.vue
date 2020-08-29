@@ -2,7 +2,7 @@
   <div id="app">
     <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" href="https://tournamentofroses.com/">
+    <a class="navbar-item" href="/add">
       <img src="./assets/rosaicon.png">
     </a>
 
@@ -15,16 +15,25 @@
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item" href="/participants">Participants</a>
+      <a v-if="currentUser" class="navbar-item" href="/participants">Participants</a>
 
       <a class="navbar-item" href="/add">Add</a>
     </div>
 
-    <div class="navbar-end">
+    <div v-if="!currentUser" class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <a class="button is-primary">
+          <a class="button is-primary" href="/login">
             <strong>Log in</strong>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div v-if="currentUser" class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          <a class="button is-primary" href @click.prevent="logOut">
+            <strong>Log Out</strong>
           </a>
         </div>
       </div>
@@ -47,6 +56,17 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    currentUser () {
+      return this.$store.state.auth.user
+    }
+  },
+  methods: {
+    logOut () {
+      this.$store.dispatch('auth/logout')
+      this.$router.push('/login')
+    }
+  }
 }
 </script>

@@ -3,15 +3,17 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VeeValidate from 'vee-validate'
+import store from './store'
 
 require('./assets/sass/main.sass')
 
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+Vue.use(VeeValidate)
+
 new Vue({
-  el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-})
+  store,
+  render: h => h(App)
+}).$mount('#app')
